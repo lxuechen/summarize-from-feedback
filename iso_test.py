@@ -20,12 +20,12 @@ import torch
 
 
 def oai_test(fp16_activations=True):
-    # pipenv run python test.py --task "oai_test"
+    # pipenv run python iso_test.py --task "oai_test"
     # install packages ftfy, blobfile
 
     from summarize_from_feedback.reward_model import RewardModel
     from summarize_from_feedback.query_response_model import ModelSpec, RunParams
-    from summarize_from_feedback.tasks import TaskHParams, TaskQueryHParams
+    from summarize_from_feedback.tasks import TaskHParams, TaskQueryHParams, TaskResponseHParams
 
     # This downloads and caches to /tmp/bf-dir-cache/. Not great on nlp-cluster.
     reward_model_spec = ModelSpec(
@@ -54,12 +54,15 @@ def oai_test(fp16_activations=True):
             truncate_text='\n',
             padding=None,
             pad_side='left'
-        )
+        ),
+        response=TaskResponseHParams(
+            ref_format_str=' {reference}', length=48, truncate_token=50256
+        ),
     )
     reward_model = RewardModel(task_hparams=task_hparams, spec=reward_model_spec, layout=layout)
 
     query_tokens = torch.ones(512)  # query length.
-    response_tokens = torch.ones(48)  # response length.
+    response_tokens = torch.ones(1, 48)  # response length. (num_responses, seq_len).
     act_dtype = torch.float16 if fp16_activations else torch.float32
     results = reward_model.reward(
         query_tokens=query_tokens.unsqueeze(0),
