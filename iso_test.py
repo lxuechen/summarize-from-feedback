@@ -61,8 +61,8 @@ def oai_test(fp16_activations=True):
     )
     reward_model = RewardModel(task_hparams=task_hparams, spec=reward_model_spec, layout=layout)
 
-    query_tokens = torch.ones(512)  # query length.
-    response_tokens = torch.ones(1, 48)  # response length. (num_responses, seq_len).
+    query_tokens = torch.ones(512, dtype=torch.long)  # query length.
+    response_tokens = torch.ones(1, 48, dtype=torch.long)  # response length. (num_responses, seq_len).
     act_dtype = torch.float16 if fp16_activations else torch.float32
     results = reward_model.reward(
         query_tokens=query_tokens.unsqueeze(0),
