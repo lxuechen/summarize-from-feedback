@@ -540,6 +540,7 @@ def build_with_random_weights(
             f"will results in a ~20% slowdown"
         )
 
+    # TODO(lxuechen): disable
     mp_comm = create_model_parallel_comm(layout)
 
     # Only pass these params to the Transformer constructor if they're in model_H. That way, the

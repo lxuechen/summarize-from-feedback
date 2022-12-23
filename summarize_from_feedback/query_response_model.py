@@ -9,6 +9,7 @@ from typing import Callable, Optional, Set, List, Dict
 import blobfile as bf
 import numpy as np
 import torch
+# TODO(lxuechen): disable
 from mpi4py import MPI
 
 import summarize_from_feedback
@@ -38,6 +39,7 @@ class RunParams(hyperparams.HParams):
 
     n_shards: int = 1
 
+    # TODO(lxuechen): disable
     def all_gpu_layout(self):
         return ModelLayout.standard(
             n_shards=self.n_shards,
@@ -481,6 +483,7 @@ class QueryResponseModel:
     def __init__(
         self, spec: ModelSpec, *, layout: ModelLayout, logit_head=True, heads=(), init_scales=1.0
     ):
+        # TODO(lxuechen): disable
         device = setup_cuda_device_and_dist(
             backend="nccl" if spec.device == "cuda" else "gloo",
             master_addr=None,
@@ -489,6 +492,7 @@ class QueryResponseModel:
         self.device = device
         self.layout = layout
         assert self.layout.n_shards == spec.run_params.n_shards
+        # TODO(lxuechen): disable
         self.dp_comm = create_data_parallel_comm(layout)
         self.in_replica_comm = create_within_replica_comm(layout)
 
@@ -592,6 +596,7 @@ class QueryResponseModel:
         """
         When called on all ranks, waits until all ranks are done
         """
+        # TODO(lxuechen): disable
         self.in_replica_comm.barrier(name)
         self.dp_comm.barrier(name)
 
