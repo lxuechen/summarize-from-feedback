@@ -1,0 +1,7 @@
+blobfile>=0.17.2,==0.*
+cloudpickle==1.2.2
+filelock>=3.0.10,==3.*
+ftfy~=5.6
+pytz~=2019.3
+regex>=2017.4.5,==2017.*
+typeguard>=2.5.0
