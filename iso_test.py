@@ -26,8 +26,11 @@ def oai_test(fp16_activations=True):
     from summarize_from_feedback.reward_model import RewardModel
     from summarize_from_feedback.query_response_model import ModelSpec, RunParams
     from summarize_from_feedback.tasks import TaskHParams, TaskQueryHParams, TaskResponseHParams
+    from summarize_from_feedback.model_layout import ModelLayout
 
     # This downloads and caches to /tmp/bf-dir-cache/. Not great on nlp-cluster.
+    # info.json by default stored at
+    # /tmp/bf-dir-cache/az/openaipublic/summarize-from-feedback/models/rm4/info.json
     reward_model_spec = ModelSpec(
         device='cuda',
         load_path='https://openaipublic.blob.core.windows.net/summarize-from-feedback/models/rm4',
@@ -44,7 +47,15 @@ def oai_test(fp16_activations=True):
             n_shards=1
         )
     )
-    layout = reward_model_spec.run_params.all_gpu_layout()
+    print('model_spec okay')
+
+    layout = ModelLayout.standard(
+        n_shards=1,
+        total_gpus=1,
+        my_rank=0,
+    )
+    print('layout okay')
+
     task_hparams = TaskHParams(
         query=TaskQueryHParams(
             length=512,
@@ -59,7 +70,10 @@ def oai_test(fp16_activations=True):
             ref_format_str=' {reference}', length=48, truncate_token=50256
         ),
     )
+    print('task_hparams okay')
+
     reward_model = RewardModel(task_hparams=task_hparams, spec=reward_model_spec, layout=layout)
+    print('reward_model okay')
 
     query_tokens = torch.ones(512, dtype=torch.long)  # query length.
     response_tokens = torch.ones(1, 48, dtype=torch.long)  # response length. (num_responses, seq_len).
