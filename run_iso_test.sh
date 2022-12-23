@@ -3,4 +3,3 @@
 eval "$(conda shell.bash hook)"
 conda activate lxuechen-summ-hf
 pipenv run python iso_test.py --task "oai_test"
-exit
